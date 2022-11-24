@@ -2,18 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Forms\Components\FileUpload;
+use App\Models\Product;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\TextInputColumn;
+use Filament\Forms\Components\BelongsToSelect;
+use App\Filament\Resources\ProductResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
@@ -25,11 +30,18 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
+
+                BelongsToSelect::make('category_id')
+                    ->relationship('category', 'name'),
+
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('qty')->required(),
                 Forms\Components\TextInput::make('price')->required(),
                 Forms\Components\TextInput::make('description')->required(),
                 FileUpload::make("image")->image(),
+
+
+
             ]);
     }
 
@@ -39,6 +51,10 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('qty'),
+                Tables\Columns\TextColumn::make('category.name'),
+                // Tables\Columns\TextColumn::make('category')->type('name'),
+
+
                 Tables\Columns\TextColumn::make('price'),
                 Tables\Columns\TextColumn::make('description'),
                 ImageColumn::make('image')
