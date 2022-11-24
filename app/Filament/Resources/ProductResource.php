@@ -13,6 +13,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Columns\ImageColumn;
 
 class ProductResource extends Resource
 {
@@ -27,6 +28,7 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('qty')->required(),
                 Forms\Components\TextInput::make('price')->required(),
+                Forms\Components\TextInput::make('description')->required(),
                 FileUpload::make("image")->image(),
             ]);
     }
@@ -38,6 +40,8 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('qty'),
                 Tables\Columns\TextColumn::make('price'),
+                Tables\Columns\TextColumn::make('description'),
+                ImageColumn::make('image')
             ])
             ->filters([
                 //
