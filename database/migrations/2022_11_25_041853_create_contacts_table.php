@@ -13,17 +13,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
             $table->string('first_name', 25);
             $table->string('last_name', 25);
-            $table->string('email', 50)->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password')->nullable();
-            $table->boolean('owner')->default(false);
-            $table->string('photo_path', 100)->nullable();
-            $table->rememberToken();
+            $table->string('email', 50)->nullable();
+            $table->string('phone', 50)->nullable();
+            $table->string('address', 150)->nullable();
+            $table->string('city', 50)->nullable();
+            $table->string('region', 50)->nullable();
+            $table->string('country', 2)->nullable();
+            $table->string('postal_code', 25)->nullable();
+
+
             $table->foreignId('account_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignId('organization_id')->index()->constrained()->cascadeOnDelete();
+
+
             $table->timestamps();
             $table->softDeletes();
         });
@@ -36,6 +42,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('contacts');
     }
 };
