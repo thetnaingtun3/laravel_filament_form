@@ -7,6 +7,7 @@ use Filament\Models\Contracts\FilamentUser;
 
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -38,10 +39,14 @@ class User extends Authenticatable implements FilamentUser, HasName
         return true;
     }
 
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Account::class, 'account_id');
+    }
 
     public function getFilamentName(): string
     {
-         return "{$this->first_name} {$this->last_name}";
+        return "{$this->first_name} {$this->last_name}";
     }
 
 }

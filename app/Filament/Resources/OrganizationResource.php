@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\OrganizationResource\RelationManagers\ContactsRelationManager;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -15,9 +16,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\OrganizationResource\Pages;
+use Illuminate\Database\Eloquent\Model;
 use Squire\Models\Country;
-
-
 
 
 class OrganizationResource extends Resource
@@ -31,12 +31,14 @@ class OrganizationResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                TextInput::make('email')->email()->required()->unique(),
+                TextInput::make('email')->unique(
+                    ignorable: fn(null|Model $record): null|Model => $record
+                )->email()->required(),
                 TextInput::make('phone')->tel()->required(),
                 TextInput::make('address')->required(),
                 TextInput::make('city')->required(),
                 TextInput::make('region')->required(),
-                Select::make('country')->options(Country::orderBy('name')->get()),
+                Select::make('country')->options(Country::query()->pluck('name', 'code_2'))->searchable()->required(),
                 TextInput::make('postal_code')->required(),
             ]);
     }
@@ -48,7 +50,7 @@ class OrganizationResource extends Resource
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('phone')->searchable(),
                 TextColumn::make('city')->searchable()->sortable(),
-                TextColumn::make('country')->searchable()->sortable(),
+                TextColumn::make('countryName.name')->searchable()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('deleted_at')
@@ -85,7 +87,7 @@ class OrganizationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //  protected static ?string $model = Organization::class;
+            ContactsRelationManager::class
         ];
     }
 
